@@ -1,12 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import SignsCollection from '../../../database/collections/signs_en';
+
+import SignsENCollection from '../../../database/collections/signs_en';
+import SignsUACollection from '../../../database/collections/signs_ua';
+import Languages from '../../../types/languages';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const filters = req.body;
+  const { language, filters } = req.body;
 
   if (req.method === 'POST') {
     try {
-      const signsCollection = await SignsCollection;
+      const signsCollection = await (language === Languages.EN ? SignsENCollection : SignsUACollection);
       
       const sign = await signsCollection?.find(filters).toArray();
 

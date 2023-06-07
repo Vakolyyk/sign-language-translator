@@ -1,6 +1,8 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Button from '@mui/material/Button';
 
 import { useMutation } from 'react-query';
@@ -10,20 +12,24 @@ import Image from 'next/image';
 import { isLetter, translateText } from '../utils/translate';
 import Sign from '../types/sign';
 import Loader from './common/Loader';
+import Languages from '../types/languages';
+import { queryClient } from '../pages/_app';
 
 const SignTranslator = () => {
   const [value, setValue] = useState('');
+  const [language, setLanguage] = useState(Languages.EN);
+  const [translation, setTranslation] = useState<Sign[]>([]);
   const [translatedText, setTranslatedText] = useState('');
 
   const {
-    data: translation,
     mutateAsync: translate,
     isLoading: isTranslating
   } = useMutation<Sign[], unknown, string>(
     'translation',
-    () => translateText(value),
+    () => translateText(value, language),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        setTranslation(data);
         setTranslatedText(value);
       }
     }
@@ -31,6 +37,13 @@ const SignTranslator = () => {
   
   const handleChangeValue = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValue(event.target.value);
+  }, []);
+
+  const handleChangeLanguage = useCallback((event: SelectChangeEvent<Languages>) => {
+    setTranslatedText('');
+    setValue('');
+    setTranslation([]);
+    setLanguage(event.target.value as Languages);
   }, []);
 
   const onTranslate = useCallback(() => {
@@ -51,13 +64,32 @@ const SignTranslator = () => {
           height: 'max-content',
         }}
       >
-        <Typography
-          fontSize={24}
-          fontFamily="Eczar"
-          fontWeight={400}
+        <Box
+          sx={{
+            mb: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
         >
-          Enter your text below:
-        </Typography>
+          <Typography
+            fontSize={24}
+            fontFamily="Eczar"
+            fontWeight={400}
+          >
+            Enter your text below:
+          </Typography>
+          <Select
+            value={language}
+            onChange={handleChangeLanguage}
+          >
+            {Object.values(Languages).map(l => (
+              <MenuItem value={l}>
+                {l}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
         <TextField
           placeholder="Type in here..."
           value={value}
@@ -81,7 +113,7 @@ const SignTranslator = () => {
         Translate
       </Button>
       <Box>
-        {translation ? (
+        {translation.length > 0 ? (
           <>
             <Typography
               fontSize={24}
@@ -91,8 +123,8 @@ const SignTranslator = () => {
               Translation:
             </Typography>
             <Box fontSize={50} lineHeight="50px">
-              {translation.map((s, i) => isLetter(translatedText[i]) ? (
-                <Image src={s.link} alt={`Sing ${s.value}`} width={50} height={50}/>
+              {translation.map((s, i) => isLetter(translatedText[i], language) ? (
+                <Image src={s.link} alt={`Sing ${s.value}`} width={50} height={70}/>
               ) : (
                 <span>{s as unknown as string}</span>
               ))}
