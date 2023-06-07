@@ -18,8 +18,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => (
     }}
   >
     <Header />
-    <Box component="main">
-      <Container maxWidth="lg">{children}</Container>
+    <Box component="main" flexGrow={1}>
+      <Container maxWidth="lg" sx={{ height: '100%' }}>
+        {children}
+      </Container>
     </Box>
     <Footer />
   </Box>

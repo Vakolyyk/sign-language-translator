@@ -10,7 +10,7 @@ const Loader: React.FC<BackdropProps> = ({ sx, ...rest }) => (
     }}
     {...rest}
   >
-    <CircularProgress sx={{ color: '#C58FFF' }} />
+    <CircularProgress sx={{ color: '#353ee8' }} />
   </Backdrop>
 );
 
