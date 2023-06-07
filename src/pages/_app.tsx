@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app'
 
 import Layout from '../components/common/Layout'
 
-export default function App({ Component, pageProps }: AppProps) {
+const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
@@ -17,3 +17,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </>
   )
 }
+
+export default App;
