@@ -19,7 +19,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => (
   >
     <Header />
     <Box component="main">
-      <Container maxWidth="md">{children}</Container>
+      <Container maxWidth="lg">{children}</Container>
     </Box>
     <Footer />
   </Box>
