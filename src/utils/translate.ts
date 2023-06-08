@@ -5,10 +5,10 @@ import Languages from '../types/languages';
 
 export const isLetter = (symbol: string, language: Languages) => {
   if (language === Languages.EN) {
-    return 'abcdefghijklmnopqrstuvwxyz'.includes(symbol?.toLowerCase());
+    return /^[A-Za-z]$/.test(symbol);
   }
 
-  return 'абвгґдеєжзиіїйклмнопрстуфхцчшщьюя'.includes(symbol?.toLowerCase());
+  return /^[А-ЩЬЮЯЄІҐа-щьюяєіґ']$/.test(symbol);
 }
 
 export const getSignByValue = async (value: string, language: Languages) =>
