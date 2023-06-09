@@ -6,15 +6,11 @@ import dynamic from 'next/dynamic';
 import appConfig from '../configs/app.config';
 import Loader from '../components/common/Loader';
 
-type ConnectionStatus = {
-  isConnected: boolean
-}
-
 const SignTranslator = dynamic(
   () => import('../components/SignTranslator')
 );
 
-const SignTranslatorPage: NextPage<ConnectionStatus> = ({ isConnected }) => (
+const SignTranslatorPage: NextPage = () => (
   <>
     <Head>
       <title>{appConfig.title}</title>
