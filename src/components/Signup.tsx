@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 import { emailValidator } from '../utils/auth';
 
-const Login: React.FC = () => {
+const Signup: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -20,6 +20,7 @@ const Login: React.FC = () => {
   } = useForm();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
   const submitForm = () => ({});
 
@@ -43,10 +44,30 @@ const Login: React.FC = () => {
         fontFamily="Eczar"
         textAlign="center"
       >
-        ENTER THE SIGN TRANSLATOR
+        REGISTRATION
       </Typography>
       <Box maxWidth="sm">
         <form onSubmit={handleSubmit(submitForm)}>
+          <TextField
+            id="name"
+            label="name"
+            variant="filled"
+            color="primary"
+            fullWidth
+            {...register('name')}
+            sx={{ mb: 3 }}
+          />
+          
+          <TextField
+            id="lastname"
+            label="lastname"
+            variant="filled"
+            color="primary"
+            fullWidth
+            {...register('lastname')}
+            sx={{ mb: 3 }}
+          />
+
           <TextField
             id="email"
             label="email"
@@ -56,6 +77,7 @@ const Login: React.FC = () => {
             {...register('email', emailValidator())}
             sx={{ mb: 3 }}
           />
+
           <TextField
             type={showPassword ? 'text' : 'password'}
             id="password"
@@ -81,23 +103,48 @@ const Login: React.FC = () => {
             })}
           />
 
+          <TextField
+            type={showRepeatPassword ? 'text' : 'password'}
+            id="repeatPassword"
+            label="repeat password"
+            variant="filled"
+            color="primary"
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle repeatPassword visibility"
+                    onClick={() => setShowRepeatPassword(prev => !prev)}
+                  >
+                    {showRepeatPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{ mb: 3 }}
+            {...register('repeatPassword', {
+              required: true,
+            })}
+          />
+
           <LoadingButton
             variant="contained"
             color="primary"
             type="submit"
             disabled={!email || !password}
           >
-            Log in
+            Sign up
           </LoadingButton>
         </form>
       </Box>
       <Typography fontFamily="Eczar" textAlign="start">
-        Don't have an account yet?
+        Already have an account?
         {' '}
-        <Link href="/signup">Sign up</Link>
+        <Link href="/login">Log in</Link>
       </Typography>
     </Box>
   )
 };
 
-export default Login;
+export default Signup;
