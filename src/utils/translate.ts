@@ -11,8 +11,8 @@ export const isLetter = (symbol: string, language: Languages) => {
   return /^[А-ЩЬЮЯЄІҐа-щьюяєіґ']$/.test(symbol);
 }
 
-export const getSignByValue = async (value: string, language: Languages) =>
-  await axios.post('/api/signs', { language, filters: { value } });
+export const findSign = async (data: Record<string, string>) =>
+  await axios.post('/api/sign', data);
 
 export const translateText = async (text: string, language: Languages): Promise<Sign[]> => {
   const splittedText = Array.from(text);
@@ -22,7 +22,12 @@ export const translateText = async (text: string, language: Languages): Promise<
       return Promise.resolve(s);
     }
 
-    return getSignByValue(s.toLowerCase(), language).then(({ data }) => data);
+    const signData = {
+      value: s.toLowerCase(),
+      language,
+    };
+
+    return findSign(signData).then(({ data }) => data);
   })
 
   const signs: Sign[] = await Promise.all(signsPromises);
