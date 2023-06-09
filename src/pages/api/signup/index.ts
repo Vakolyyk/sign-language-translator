@@ -30,14 +30,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const hashedPassword = await hash(password, 10);
 
-      const user = await User.create({
+      await User.create({
         name,
         lastName,
         email,
         password: hashedPassword,
       });
 
-      return res.status(200).json(generateAuthToken(omit(['password'], user.toObject())));
+      return res.status(200).json({});
     } catch (e) {
       console.log(e);
       return res.status(500).json(e);

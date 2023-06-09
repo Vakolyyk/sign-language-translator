@@ -16,7 +16,7 @@ import Link from 'next/link';
 
 import { emailValidator, formHasErrors } from '../utils/form';
 import { signupUser } from '../utils/auth';
-import { Signup } from '../types/user';
+import { Signup } from '../types/auth';
 import { useSnackBar } from '../context/snackbar-context';
 
 const Signup: React.FC = () => {
@@ -32,7 +32,7 @@ const Signup: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
-  const { isLoading, mutateAsync: signup } = useMutation<unknown, AxiosError<string>, Signup>(
+  const { isLoading, mutateAsync: signup } = useMutation<unknown, unknown, Signup>(
     data => signupUser(data),
     {
       onSuccess: () => {

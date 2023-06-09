@@ -6,26 +6,49 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
+import { useMutation } from 'react-query';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
+import { propOr } from 'ramda';
 import Link from 'next/link';
 
-import { emailValidator } from '../utils/form';
-import { Login } from '../types/user';
+import { emailValidator, formHasErrors } from '../utils/form';
+import { AuthDataType, Login } from '../types/auth';
+import { useSnackBar } from '../context/snackbar-context';
+import { loginUser, setAuthCookie } from '../utils/auth';
 
 const Login: React.FC = () => {
+  const router = useRouter();
+  const { showSnackBar } = useSnackBar();
+
   const {
     register,
     handleSubmit,
-    watch,
+    formState: { errors },
   } = useForm<Login>();
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const submitForm = () => ({});
+  const { isLoading, mutateAsync: login } = useMutation<AuthDataType, unknown, Login>(
+    data => loginUser(data),
+    {
+      onSuccess: data => {
+        setAuthCookie(data);
+        showSnackBar('Successfully Authenticated');
+        router.push('/translator');
+      }
+    }
+  );
 
-  const email = watch('email');
-  const password = watch('password');
+  const submitForm = async (values: Login) => {
+    try {
+      await login(values);
+    } catch (e) {
+      const errMessage = propOr('', 'message', e);
+      showSnackBar(errMessage as string, 'warning');
+    }
+  }
 
   return (
     <Box
@@ -49,15 +72,20 @@ const Login: React.FC = () => {
       <Box maxWidth="sm">
         <form onSubmit={handleSubmit(submitForm)}>
           <TextField
+            {...register('email', emailValidator())}
             id="email"
             label="email"
             variant="filled"
             color="primary"
             fullWidth
-            {...register('email', emailValidator())}
+            error={Boolean(errors.email)}
+            helperText={errors.email?.message}
             sx={{ mb: 3 }}
-          />
+            />
           <TextField
+            {...register('password', {
+              required: 'Please, input the password',
+            })}
             type={showPassword ? 'text' : 'password'}
             id="password"
             label="password"
@@ -76,17 +104,17 @@ const Login: React.FC = () => {
                 </InputAdornment>
               ),
             }}
+            error={Boolean(errors.password)}
+            helperText={errors.password?.message}
             sx={{ mb: 3 }}
-            {...register('password', {
-              required: true,
-            })}
           />
 
           <LoadingButton
             variant="contained"
             color="primary"
             type="submit"
-            disabled={!email || !password}
+            loading={isLoading}
+            disabled={formHasErrors(errors)}
           >
             Log in
           </LoadingButton>

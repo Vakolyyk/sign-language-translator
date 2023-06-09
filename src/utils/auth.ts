@@ -2,20 +2,25 @@ import { setCookie } from 'nookies';
 import { SignOptions, sign } from 'jsonwebtoken';
 import axios, { AxiosError } from 'axios';
 
-import { Signup } from '../types/user';
+import { Signup, Login, AuthDataType } from '../types/auth';
 import { UserModel } from '../database/models/User.model';
 import authConfig from '../configs/auth.config';
 
-type AuthDataType = {
-  token: string;
-  user: UserModel;
-};
-
 export const signupUser = (data: Signup) =>
-  axios.post('/api/signup', data).catch(e => {
-    const err = e as AxiosError<string>;
-    throw new Error(err.response?.data);
-  });
+  axios.post('/api/signup', data)
+    .then(({ data }) => data)
+    .catch(e => {
+      const err = e as AxiosError<string>;
+      throw new Error(err.response?.data);
+    });
+
+export const loginUser = (data: Login) =>
+  axios.post('/api/login', data)
+    .then(({ data }) => data)
+    .catch(e => {
+      const err = e as AxiosError<string>;
+      throw new Error(err.response?.data);
+    });
   
 export const setAuthCookie = (data: AuthDataType, ctx: any = null) => {
   // set auth cookie to all domain
