@@ -6,22 +6,17 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
-import { useRouter } from 'next/router';
-import { propOr } from 'ramda';
 import Link from 'next/link';
 
 import { emailValidator, formHasErrors } from '../utils/form';
-import { signupUser } from '../utils/auth';
 import { Signup } from '../types/auth';
-import { useSnackBar } from '../context/snackbar-context';
+import { useAuth } from '../context/auth-context';
+import Loader from './common/Loader';
 
 const Signup: React.FC = () => {
-  const router = useRouter();
-  const { showSnackBar } = useSnackBar();
+  const { isSignupProcessing, onSignup } = useAuth();
 
   const {
     register,
@@ -31,25 +26,6 @@ const Signup: React.FC = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-
-  const { isLoading, mutateAsync: signup } = useMutation<unknown, unknown, Signup>(
-    data => signupUser(data),
-    {
-      onSuccess: () => {
-        showSnackBar('Registration successful. You will be redirected to the login page.');
-        router.push('/login');
-      },
-    }
-  );
-
-  const submitForm = async (values: Signup) => {
-    try {
-      await signup(values);
-    } catch (e) {
-      const errMessage = propOr('', 'message', e);
-      showSnackBar(errMessage as string, 'warning');
-    }
-  }
 
   return (
     <Box
@@ -71,7 +47,7 @@ const Signup: React.FC = () => {
         REGISTRATION
       </Typography>
       <Box maxWidth="sm">
-        <form onSubmit={handleSubmit(submitForm)}>
+        <form onSubmit={handleSubmit(onSignup)}>
           <TextField
             {...register('name', { required: 'Please, input your name' })}
             id="name"
@@ -162,7 +138,7 @@ const Signup: React.FC = () => {
             variant="contained"
             color="primary"
             type="submit"
-            loading={isLoading}
+            loading={isSignupProcessing}
             disabled={formHasErrors(errors)}
           >
             Sign up

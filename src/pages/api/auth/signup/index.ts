@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { hash } from 'bcryptjs';
 
-import { User } from '../../../database/models/User.model';
-import dbConnect from '../../../database/mongodb';
+import { User } from '../../../../database/models/User.model';
+import dbConnect from '../../../../database/mongodb';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await dbConnect();

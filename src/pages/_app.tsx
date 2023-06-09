@@ -7,6 +7,7 @@ import type { AppProps } from 'next/app'
 import Head from 'next/head'
 
 import { SnackBarProvider } from '../context/snackbar-context';
+import { AuthProvider, ProtectRoute } from '../context/auth-context';
 import Layout from '../components/common/Layout'
 
 export const queryClient = new QueryClient({
@@ -26,10 +27,16 @@ const App = ({ Component, pageProps }: AppProps) => {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <SnackBarProvider>
-        <CssBaseline />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <AuthProvider>
+          <ProtectRoute>
+            <>
+              <CssBaseline />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </>
+          </ProtectRoute>
+        </AuthProvider>
       </SnackBarProvider>
     </QueryClientProvider>
   )

@@ -1,10 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { omit } from 'ramda';
 import { compare } from 'bcryptjs';
 
-import { User } from '../../../database/models/User.model';
-import dbConnect from '../../../database/mongodb';
-import { generateResponseWithAuthData } from '../../../utils/auth';
+import { User } from '../../../../database/models/User.model';
+import dbConnect from '../../../../database/mongodb';
+import { generateAuthToken } from '../../../../utils/auth';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await dbConnect();
@@ -32,7 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(400).json('Email or password is invalid');
       }  
 
-      return res.status(200).json(generateResponseWithAuthData(user.toObject()));
+      return res.status(200).json(generateAuthToken(user.toObject()));
     } catch (e) {
       console.error(e);
       return res.status(500).json(e);

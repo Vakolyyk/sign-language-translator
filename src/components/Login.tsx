@@ -6,21 +6,16 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { useMutation } from 'react-query';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
-import { propOr } from 'ramda';
 import Link from 'next/link';
 
 import { emailValidator, formHasErrors } from '../utils/form';
-import { AuthDataType, Login } from '../types/auth';
-import { useSnackBar } from '../context/snackbar-context';
-import { loginUser, setAuthCookie } from '../utils/auth';
+import { Login } from '../types/auth';
+import { useAuth } from '../context/auth-context';
 
 const Login: React.FC = () => {
-  const router = useRouter();
-  const { showSnackBar } = useSnackBar();
+  const { isLoginProcessing, onLogin } = useAuth();
 
   const {
     register,
@@ -29,26 +24,6 @@ const Login: React.FC = () => {
   } = useForm<Login>();
 
   const [showPassword, setShowPassword] = useState(false);
-
-  const { isLoading, mutateAsync: login } = useMutation<AuthDataType, unknown, Login>(
-    data => loginUser(data),
-    {
-      onSuccess: data => {
-        setAuthCookie(data);
-        showSnackBar('Successfully Authenticated');
-        router.push('/translator');
-      }
-    }
-  );
-
-  const submitForm = async (values: Login) => {
-    try {
-      await login(values);
-    } catch (e) {
-      const errMessage = propOr('', 'message', e);
-      showSnackBar(errMessage as string, 'warning');
-    }
-  }
 
   return (
     <Box
@@ -70,7 +45,7 @@ const Login: React.FC = () => {
         ENTER THE SIGN TRANSLATOR
       </Typography>
       <Box maxWidth="sm">
-        <form onSubmit={handleSubmit(submitForm)}>
+        <form onSubmit={handleSubmit(onLogin)}>
           <TextField
             {...register('email', emailValidator())}
             id="email"
@@ -113,7 +88,7 @@ const Login: React.FC = () => {
             variant="contained"
             color="primary"
             type="submit"
-            loading={isLoading}
+            loading={isLoginProcessing}
             disabled={formHasErrors(errors)}
           >
             Log in
