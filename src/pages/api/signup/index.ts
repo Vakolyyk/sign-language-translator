@@ -1,10 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { omit } from 'ramda';
 import { hash } from 'bcryptjs';
 
 import { User } from '../../../database/models/User.model';
 import dbConnect from '../../../database/mongodb';
-import { generateAuthToken } from '../../../utils/auth';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await dbConnect();
@@ -39,7 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       return res.status(200).json({});
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return res.status(500).json(e);
     }
   }

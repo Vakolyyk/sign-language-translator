@@ -13,7 +13,6 @@ import { isLetter, translateText } from '../utils/translate';
 import Sign from '../types/sign';
 import Loader from './common/Loader';
 import Languages from '../types/languages';
-import { queryClient } from '../pages/_app';
 
 const SignTranslator = () => {
   const [value, setValue] = useState('');
@@ -84,7 +83,7 @@ const SignTranslator = () => {
             onChange={handleChangeLanguage}
           >
             {Object.values(Languages).map(l => (
-              <MenuItem value={l}>
+              <MenuItem key={l} value={l}>
                 {l}
               </MenuItem>
             ))}
@@ -124,7 +123,7 @@ const SignTranslator = () => {
             </Typography>
             <Box fontSize={50} lineHeight="50px">
               {translation.map((s, i) => isLetter(translatedText[i], language) ? (
-                <Image src={s.link} alt={`Sing ${s.value}`} width={50} height={70}/>
+                <Image key={s._id + i} src={s.link} alt={`Sing ${s.value}`} width={50} height={70}/>
               ) : (
                 <span>{s as unknown as string}</span>
               ))}

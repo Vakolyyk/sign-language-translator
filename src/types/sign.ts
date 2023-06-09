@@ -1,6 +1,7 @@
 type Sign = {
-  id: string;
+  _id: string;
   value: string;
+  language: string;
   link: string;
 }
 
