@@ -6,26 +6,50 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
+import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
+import { useRouter } from 'next/router';
+import { propOr } from 'ramda';
 import Link from 'next/link';
 
-import { emailValidator } from '../utils/auth';
+import { emailValidator, formHasErrors } from '../utils/form';
+import { signupUser } from '../utils/auth';
+import { Signup } from '../types/user';
+import { useSnackBar } from '../context/snackbar-context';
 
 const Signup: React.FC = () => {
+  const router = useRouter();
+  const { showSnackBar } = useSnackBar();
+
   const {
     register,
     handleSubmit,
-    watch,
-  } = useForm();
+    formState: { errors },
+  } = useForm<Signup>();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
-  const submitForm = () => ({});
+  const { isLoading, mutateAsync: signup } = useMutation<unknown, AxiosError<string>, Signup>(
+    data => signupUser(data),
+    {
+      onSuccess: () => {
+        showSnackBar('Registration successful. You will be redirected to the login page.');
+        router.push('/login');
+      },
+    }
+  );
 
-  const email = watch('email');
-  const password = watch('password');
+  const submitForm = async (values: Signup) => {
+    try {
+      await signup(values);
+    } catch (e) {
+      const errMessage = propOr('', 'message', e);
+      showSnackBar(errMessage as string, 'warning');
+    }
+  }
 
   return (
     <Box
@@ -49,42 +73,51 @@ const Signup: React.FC = () => {
       <Box maxWidth="sm">
         <form onSubmit={handleSubmit(submitForm)}>
           <TextField
+            {...register('name', { required: 'Please, input your name' })}
             id="name"
             label="name"
             variant="filled"
             color="primary"
             fullWidth
-            {...register('name')}
+            error={Boolean(errors.name)}
+            helperText={errors.name?.message}
             sx={{ mb: 3 }}
           />
           
           <TextField
-            id="lastname"
-            label="lastname"
+            {...register('lastName', { required: 'Please, input your last name' })}
+            id="last name"
+            label="last name"
             variant="filled"
             color="primary"
             fullWidth
-            {...register('lastname')}
+            error={Boolean(errors.lastName)}
+            helperText={errors.lastName?.message}
             sx={{ mb: 3 }}
           />
 
           <TextField
+            {...register('email', emailValidator())}
             id="email"
             label="email"
             variant="filled"
             color="primary"
             fullWidth
-            {...register('email', emailValidator())}
+            error={Boolean(errors.email)}
+            helperText={errors.email?.message}
             sx={{ mb: 3 }}
           />
 
           <TextField
+            {...register('password', { required: 'Please, input the password' })}
             type={showPassword ? 'text' : 'password'}
             id="password"
             label="password"
             variant="filled"
             color="primary"
             fullWidth
+            error={Boolean(errors.password)}
+            helperText={errors.password?.message}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -98,12 +131,12 @@ const Signup: React.FC = () => {
               ),
             }}
             sx={{ mb: 3 }}
-            {...register('password', {
-              required: true,
-            })}
           />
 
           <TextField
+            {...register('repeatPassword', {
+              required: 'Please, repeat your password',
+            })}
             type={showRepeatPassword ? 'text' : 'password'}
             id="repeatPassword"
             label="repeat password"
@@ -123,16 +156,14 @@ const Signup: React.FC = () => {
               ),
             }}
             sx={{ mb: 3 }}
-            {...register('repeatPassword', {
-              required: true,
-            })}
           />
 
           <LoadingButton
             variant="contained"
             color="primary"
             type="submit"
-            disabled={!email || !password}
+            loading={isLoading}
+            disabled={formHasErrors(errors)}
           >
             Sign up
           </LoadingButton>

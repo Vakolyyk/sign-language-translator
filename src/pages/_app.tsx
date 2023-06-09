@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 
+import { SnackBarProvider } from '../context/snackbar-context';
 import Layout from '../components/common/Layout'
 
 export const queryClient = new QueryClient({
@@ -24,10 +25,12 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <CssBaseline />
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <SnackBarProvider>
+        <CssBaseline />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </SnackBarProvider>
     </QueryClientProvider>
   )
 }

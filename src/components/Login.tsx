@@ -10,14 +10,15 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 
-import { emailValidator } from '../utils/auth';
+import { emailValidator } from '../utils/form';
+import { Login } from '../types/user';
 
 const Login: React.FC = () => {
   const {
     register,
     handleSubmit,
     watch,
-  } = useForm();
+  } = useForm<Login>();
 
   const [showPassword, setShowPassword] = useState(false);
 
