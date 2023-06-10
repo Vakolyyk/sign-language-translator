@@ -1,4 +1,5 @@
 import '../styles/font.css';
+import 'regenerator-runtime/runtime';
 
 import CssBaseline from '@mui/material/CssBaseline'
 

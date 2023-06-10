@@ -13,6 +13,7 @@ import { isLetter, translateText } from '../utils/translate';
 import Sign from '../types/sign';
 import Loader from './common/Loader';
 import Languages from '../types/languages';
+import Micro from './Micro';
 
 const SignTranslator = () => {
   const [value, setValue] = useState('');
@@ -78,16 +79,21 @@ const SignTranslator = () => {
           >
             Enter your text below:
           </Typography>
-          <Select
-            value={language}
-            onChange={handleChangeLanguage}
-          >
-            {Object.values(Languages).map(l => (
-              <MenuItem key={l} value={l}>
-                {l}
-              </MenuItem>
-            ))}
-          </Select>
+          <Box>
+            {language === Languages.EN && (
+              <Micro changeValue={setValue} />
+            )}
+            <Select
+              value={language}
+              onChange={handleChangeLanguage}
+            >
+              {Object.values(Languages).map(l => (
+                <MenuItem key={l} value={l}>
+                  {l}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
         </Box>
         <TextField
           placeholder="Type in here..."
