@@ -35,10 +35,6 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const UnauthenticatedRoutes = ['/', '/login', 'signup'];
-const checkIsUnauthenticatedRoute = (r: string) =>
-  UnauthenticatedRoutes.indexOf(r) !== -1;
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -141,10 +137,10 @@ export const useAuth = () => {
 };
 
 export const ProtectRoute = ({ children }: { children: ReactElement }) => {
-  const router = useRouter();
+  const { pathname } = useRouter();
   const { user, loading } = useAuth();
   
-  if (loading || (!user && !checkIsUnauthenticatedRoute(router.pathname))) {
+  if (loading || (!user && pathname === '/translator')) {
     return <Loader open />; 
   }
   
