@@ -11,6 +11,10 @@ export const isLetter = (symbol: string, language: Languages) => {
   return /^[А-ЩЬЮЯЄІҐа-щьюяєіґ']$/.test(symbol);
 }
 
+export const getSigns = (language: string) => axios
+  .get(`/api/sign/get-all-signs?language=${language}`)
+  .then(({ data }) => data);
+
 export const findSign = async (data: Record<string, string>) =>
   await axios.post('/api/sign', data);
 
