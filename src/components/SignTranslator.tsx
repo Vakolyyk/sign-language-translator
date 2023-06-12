@@ -237,7 +237,7 @@ const SignTranslator = () => {
           </Typography>
           <Typography
             fontFamily="Eczar"
-            fontSize={24}
+            fontSize={34}
             textAlign={value ? "start" : "center"}
           >
             {value || 'Here will be your translation 😉'}

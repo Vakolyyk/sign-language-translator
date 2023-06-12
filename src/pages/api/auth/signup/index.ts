@@ -10,7 +10,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     const reqBody = req.body;
     
-    const { email, name, lastName, password, repeatPassword } = reqBody;
+    const { email, firstName, lastName, password, repeatPassword } = reqBody;
 
     try {
       const normalizedEmail = email.toLowerCase().trim();
@@ -29,7 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const hashedPassword = await hash(password, 10);
 
       await User.create({
-        name,
+        firstName,
         lastName,
         email,
         password: hashedPassword,

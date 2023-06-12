@@ -5,5 +5,5 @@ export const getFullName = (user: UserModel | null) => {
     return null;
   }
 
-  return `${user.name} ${user.lastName}`;
+  return `${user.firstName} ${user.lastName}`;
 }

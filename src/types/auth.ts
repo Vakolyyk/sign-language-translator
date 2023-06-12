@@ -1,7 +1,7 @@
 import { UserModel } from '../database/models/User.model';
 
 export type Signup = {
-  name: string,
+  firstName: string,
   lastName: string,
   email: string,
   password: string,

@@ -13,7 +13,6 @@ import Link from 'next/link';
 import { emailValidator, formHasErrors } from '../utils/form';
 import { Signup } from '../types/auth';
 import { useAuth } from '../context/auth-context';
-import Loader from './common/Loader';
 
 const Signup: React.FC = () => {
   const { isSignupProcessing, onSignup } = useAuth();
@@ -49,14 +48,14 @@ const Signup: React.FC = () => {
       <Box maxWidth="sm">
         <form onSubmit={handleSubmit(onSignup)}>
           <TextField
-            {...register('name', { required: 'Please, input your name' })}
-            id="name"
-            label="name"
+            {...register('firstName', { required: 'Please, input your first name' })}
+            id="first name"
+            label="first name"
             variant="filled"
             color="primary"
             fullWidth
-            error={Boolean(errors.name)}
-            helperText={errors.name?.message}
+            error={Boolean(errors.firstName)}
+            helperText={errors.firstName?.message}
             sx={{ mb: 3 }}
           />
           
