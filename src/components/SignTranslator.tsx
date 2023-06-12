@@ -1,3 +1,5 @@
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
@@ -7,15 +9,15 @@ import Button from '@mui/material/Button';
 
 import { useMutation, useQuery } from 'react-query';
 import { ChangeEvent, useCallback, useState } from 'react';
+import { prop } from 'ramda';
 import Image from 'next/image';
 
 import { getSigns, isLetter, translateText } from '../utils/translate';
+import { additionalSigns } from '../constants/additional-signs';
 import Sign from '../types/sign';
 import Loader from './common/Loader';
 import Languages from '../types/languages';
 import Micro from './Micro';
-import { additionalSigns } from '../constants/additional-signs';
-import { prop } from 'ramda';
 
 const SignTranslator = () => {
   const [value, setValue] = useState('');
@@ -24,6 +26,9 @@ const SignTranslator = () => {
   const [translatedText, setTranslatedText] = useState('');
 
   const [typeTranslation, setTypeTranslation] = useState(true);
+
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
   const {
     mutateAsync: translate,
@@ -107,7 +112,7 @@ const SignTranslator = () => {
             Enter your text below:
           </Typography>
           <Box>
-            {language === Languages.EN && typeTranslation && (
+            {language === Languages.EN && typeTranslation && matches && (
               <Micro changeValue={setValue} />
             )}
             <Select

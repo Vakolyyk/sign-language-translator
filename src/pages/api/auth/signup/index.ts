@@ -31,7 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       await User.create({
         firstName,
         lastName,
-        email,
+        email: normalizedEmail,
         password: hashedPassword,
       });
 
